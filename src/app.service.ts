@@ -7,8 +7,8 @@ export class AppService {
   private listaProdutos: Array<Produto> = [];
   constructor() {
     const prod1 = new Produto(1, 'arroz', 'ABC', 10.33);
-    const prod2 = new Produto(2, 'feijão', 'XYZ', 5.20);
-    const prod3 = new Produto(3, 'farinha', 'VFT', 2.49);
+    const prod2 = new Produto(2, 'feijão', 'DEF', 5.20);
+    const prod3 = new Produto(3, 'farinha', 'GHI', 2.49);
     this.listaProdutos.push(prod1, prod2, prod3);
     console.log(this.listaProdutos);
   }
