@@ -1,63 +1,64 @@
 import { Injectable } from '@nestjs/common';
-import { Cliente } from './modelo/cliente';
+import { Produto } from './modelo/produto';
 
 @Injectable()
 export class AppService {
-  private listaClientes: Array<Cliente> = [];
+
+  private listaProdutos: Array<Produto> = [];
   constructor() {
-    const client1 = new Cliente(1, 'Alice Almeida', 'alice@teste.com', 2010);
-    const client2 = new Cliente(2, 'Carlos Alberto', 'carlos@teste.com', 2007);
-    const client3 = new Cliente(3, 'Alice Almeida', 'alice@teste.com', 20);
-    this.listaClientes.push(client1, client2, client3);
-    console.log(this.listaClientes);
+    const prod1 = new Produto(1, 'arroz', 'ABC', 10.33);
+    const prod2 = new Produto(2, 'feijão', 'XYZ', 5.20);
+    const prod3 = new Produto(3, 'farinha', 'VFT', 2.49);
+    this.listaProdutos.push(prod1, prod2, prod3);
+    console.log(this.listaProdutos);
   }
-  public listarTodos(): Array<Cliente> {
-    return this.listaClientes;
+  public listarTodos(): Array<Produto> {
+    return this.listaProdutos;
   }
-  public buscarPorId(id: number): Cliente {
-    let cliente = this.listaClientes.find(
-      cliente => cliente.id == id
+  public buscarPorCodigo(codigo: number): Produto {
+    let produto = this.listaProdutos.find(
+      produto => produto.codigo == codigo
     );
-    if (!cliente) {
-      throw new Error('Cliente não encontrado');
+    if (!produto) {
+      throw new Error('Produto não encontrado');
     }
-    return cliente;
+    return produto;
   }
-  public salvar(cliente: Cliente): Cliente {
-    const incluirCliente = new Cliente(
-      this.obterProximoId(),
-      cliente.nome,
-      cliente.email,
-      cliente.anoNascimento
+  public salvar(produto: Produto): Produto {
+    const incluirProduto = new Produto(
+      this.obterProximoCodigo(),
+      produto.nome,
+      produto.email,
+      produto.anoNascimento
     );
-    this.listaClientes.push(incluirCliente);
-    return incluirCliente;
+    this.listaProdutos.push(incluirProduto);
+    return incluirProduto;
   }
-  public atualizar(id: number, cliente: Cliente): Cliente {
-    let indice = this.listaClientes.findIndex(
-      cliente => cliente.id == id
+  public atualizar(codigo: number, produto: Produto): Produto {
+    let indice = this.listaProdutos.findIndex(
+      produto => produto.codigo == codigo
     );
-    this.listaClientes[indice] = cliente;
-    return cliente;
+    this.listaProdutos[indice] = produto;
+    return produto;
   }
-  public excluir(id: number): void {
-    let indice = this.listaClientes.findIndex(
-      cliente => cliente.id == id
+  public excluir(codigo: number): void {
+    let indice = this.listaProdutos.findIndex(
+      produto => produto.codigo == codigo
     );
     if (indice === -1) {
-      throw new Error('Cliente não encontrado');
+      throw new Error('Produto não encontrado');
     }
-    this.listaClientes.splice(indice, 1);
+    this.listaProdutos.splice(indice, 1);
   }
-  public obterProximoId(): number {
-    if (this.listaClientes.length == 0) {
+  public obterProximoCodigo(): number {
+    if (this.listaProdutos.length == 0) {
       return 1
     } else {
-      let ultimoRegistro = this.listaClientes[
-        this.listaClientes.length - 1
+      let ultimoRegistro = this.listaProdutos[
+        this.listaProdutos.length - 1
       ];
 
-      return ultimoRegistro.id + 1;
+      return ultimoRegistro.codigo + 1;
     }
   }
 }
