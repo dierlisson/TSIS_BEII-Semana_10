@@ -28,8 +28,8 @@ export class AppService {
     const incluirProduto = new Produto(
       this.obterProximoCodigo(),
       produto.nome,
-      produto.email,
-      produto.anoNascimento
+      produto.marca,
+      produto.preco
     );
     this.listaProdutos.push(incluirProduto);
     return incluirProduto;
