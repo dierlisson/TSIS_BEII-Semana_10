@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Query, Body, Param } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Cliente } from './modelo/cliente';
+import { Produto } from './modelo/produto';
 
 @Controller()
 export class AppController {
@@ -11,32 +11,32 @@ export class AppController {
     return "O node está rodando: " + new Date();
   }
 
-  @Get("/clientes")
-  listarTodosClientes(): Array<Cliente> {
-    console.log("Entrou no método: listarTodosClientes");
+  @Get("/produtos")
+  listarTodosProdutos(): Array<Produto> {
+    console.log("Entrou no método: listarTodosProdutos");
     return this.appService.listarTodos();
   }
 
-  @Get("/cliente")
-  public buscarPorId(@Query('id') id: number): Cliente {
-    console.log("Entrou no método: buscarPorId");
-    return this.appService.buscarPorId(id);
+  @Get("/produto")
+  public buscarPorCodigo(@Query('codigo') codigo: number): Produto {
+    console.log("Entrou no método: buscarPorCodigo");
+    return this.appService.buscarPorCodigo(codigo);
   }
 
   @Post()
-  public salvar(@Body() cliente: Cliente): Cliente {
+  public salvar(@Body() produto: Produto): Produto {
     console.log("Entrou no método: salvar");
-    return this.appService.salvar(cliente);
+    return this.appService.salvar(produto);
   }
 
-  @Put(':id')
-  public alterar(@Param('id') id: number, @Body() cliente: Cliente): Cliente {
+  @Put(':codigo')
+  public alterar(@Param('codigo') codigo: number, @Body() produto: Produto): Produto {
     console.log("Entrou no método: alterar");
-    return this.appService.atualizar(id, cliente);
+    return this.appService.atualizar(codigo, produto);
   }
-  @Delete(':id')
-  public excluir(@Param('id') id: number): void {
+  @Delete(':codigo')
+  public excluir(@Param('codigo') codigo: number): void {
     console.log("Entrou no método: excluir");
-    this.appService.excluir(id);
+    this.appService.excluir(codigo);
   }
 }
