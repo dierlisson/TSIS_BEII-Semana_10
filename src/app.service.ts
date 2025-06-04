@@ -1,63 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Cliente } from './modelo/cliente';
 
 @Injectable()
 export class AppService {
-  private listaClientes: Array<Cliente> = [];
-  constructor() {
-    const client1 = new Cliente(1, 'Alice Almeida', 'alice@teste.com', 2010);
-    const client2 = new Cliente(2, 'Carlos Alberto', 'carlos@teste.com', 2007);
-    const client3 = new Cliente(3, 'Alice Almeida', 'alice@teste.com', 20);
-    this.listaClientes.push(client1, client2, client3);
-    console.log(this.listaClientes);
-  }
-  public listarTodos(): Array<Cliente> {
-    return this.listaClientes;
-  }
-  public buscarPorId(id: number): Cliente {
-    let cliente = this.listaClientes.find(
-      cliente => cliente.id == id
-    );
-    if (!cliente) {
-      throw new Error('Cliente não encontrado');
-    }
-    return cliente;
-  }
-  public salvar(cliente: Cliente): Cliente {
-    const incluirCliente = new Cliente(
-      this.obterProximoId(),
-      cliente.nome,
-      cliente.email,
-      cliente.anoNascimento
-    );
-    this.listaClientes.push(incluirCliente);
-    return incluirCliente;
-  }
-  public atualizar(id: number, cliente: Cliente): Cliente {
-    let indice = this.listaClientes.findIndex(
-      cliente => cliente.id == id
-    );
-    this.listaClientes[indice] = cliente;
-    return cliente;
-  }
-  public excluir(id: number): void {
-    let indice = this.listaClientes.findIndex(
-      cliente => cliente.id == id
-    );
-    if (indice === -1) {
-      throw new Error('Cliente não encontrado');
-    }
-    this.listaClientes.splice(indice, 1);
-  }
-  public obterProximoId(): number {
-    if (this.listaClientes.length == 0) {
-      return 1
-    } else {
-      let ultimoRegistro = this.listaClientes[
-        this.listaClientes.length - 1
-      ];
+  // private listaClientes: Array<Cliente> = [];
 
-      return ultimoRegistro.id + 1;
+  constructor(
+    @InjectRepository(Cliente)
+    private clienteRepository: Repository<Cliente>
+  ) { }
+  public listarTodos(): Promise<Cliente[]> {
+    return this.clienteRepository.find();
+  }
+  public async buscarPorId(id: number): Promise<Cliente> {
+    let cliente = await this.clienteRepository.findOneBy({ id });
+    if (!cliente) {
+      throw new NotFoundException('Cliente não encontrado');
     }
+    return cliente;
+  }
+  public async salvar(cliente: Cliente): Promise<Cliente> {
+    const novoCliente = await this.clienteRepository.save(cliente);
+    return novoCliente;
+  }
+  public async atualizar(id: number, cliente: Cliente): Promise<Cliente> {
+    const editCliente = await this.clienteRepository.findOneBy({ id });
+    if (!editCliente) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+    editCliente.nome = cliente.nome;
+    editCliente.email = cliente.email;
+    editCliente.ano = cliente.ano;
+    
+    await this.clienteRepository.save(editCliente);
+    return editCliente;
+  }
+  public async excluir(id: number): Promise<void> {
+    await this.clienteRepository.delete(id);
   }
 }
